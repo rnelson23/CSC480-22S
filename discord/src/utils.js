@@ -22,7 +22,24 @@ module.exports = {
         const auth = { headers: {}, roles: [], courseId: '' };
         const token = interaction.client.accounts.get(interaction.user.id);
 
-        if (!token) {
+        auth.headers = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+
+        let isValid = true;
+
+        await axios
+            .get('http://login:13126/auth/token/generate', auth.headers)
+            .then((res) => {
+                return res.data.find(course => course.course_name === interaction.guild.name).course_id;
+            })
+            .catch((err) => {
+                if (err.status === 401) { isValid = false; }
+            });
+
+        if (!token || !isValid) {
             const url = 'https://accounts.google.com/o/oauth2/v2/auth' +
                 '?access_type=offline' +
                 `&client_id=${process.env.CLIENT_ID}` +
@@ -33,23 +50,8 @@ module.exports = {
             throw new Error(`You are not logged in! Please [click here](${url}) to log in.`);
         }
 
-        auth.headers = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-
         auth.roles = decode(token).groups;
         auth.courseId = interaction.guild.name;
-
-        // auth.courseId = await axios
-        //     .get('http://course-viewer:13128/view/professor/courses', auth.headers)
-        //     .then((res) => {
-        //         return res.data.find(course => course.course_name === interaction.guild.name).course_id;
-        //     })
-        //     .catch((err) => {
-        //         console.error(err.stack);
-        //     });
 
         return auth;
     },

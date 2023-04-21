@@ -49,7 +49,7 @@ module.exports = {
                 });
 
             if (subcommand === 'homework') {
-                const assignmentName = interaction.options.getString('name');
+                const name = interaction.options.getString('name');
 
                 const url = `http://student-assignment:13121/assignments/student/courses/${courseId}`;
                 const base64File = await axios

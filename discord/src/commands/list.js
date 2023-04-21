@@ -94,7 +94,7 @@ module.exports = {
             } else if (subcommand === 'solutions') {
                 const studentId = interaction.member.displayName;
                 const url = 'http://student-assignment:13131/assignments/student';
-                const submissions = axios
+                const submissions = await axios
                     .get(`${url}/${courseId}/${studentId}/submissions`, headers)
                     .then((res) => {
                         return res.data;

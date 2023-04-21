@@ -6,6 +6,7 @@ module.exports = [
     require('./eval'),
     require('./join'),
     require('./list'),
+    require('./login'),
     require('./submit'),
     require('./view')
 ];
